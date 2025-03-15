@@ -11,3 +11,41 @@ npm install
 sudo chown $USER:$USER package.json
 npm cache clean --force
 npm install
+# Navigate to your project directory
+cd /path/to/your/project  
+
+# Check if package.json exists
+ls -l package.json  
+
+# If package.json is missing, initialize npm (skip this if package.json exists)
+[ ! -f package.json ] && npm init -y  
+
+# Ensure package.json is added to Git and push it
+git add package.json
+git commit -m "Added package.json"
+git push origin main  
+
+# Install dependencies
+npm install  
+
+# Check if the correct base directory is set in Netlify
+echo "Ensure Netlify's base directory is correct (root folder where package.json exists)"
+
+# Clear Netlify cache and re-deploy (Manually from Netlify Dashboard)
+echo "Go to Netlify Dashboard -> Deploys -> Trigger deploy -> Clear cache and deploy site"
+
+# If the error persists, try clearing npm cache and reinstalling dependencies
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install  
+
+# Run build manually to check for errors
+npm run build  
+
+# If using Next.js, export the project (for static deployment)
+[ -f next.config.js ] && npm run build && npm run export  
+
+# Recommit changes and deploy again
+git add .
+git commit -m "Fixed Netlify build issue"
+git push origin main
